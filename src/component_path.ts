@@ -10,7 +10,13 @@ export class JXRPath extends HTMLElement {
     this.setStyle();
 
     this.components = links.map((link) => new JXRPathComponent(link));
-    this.components.forEach((component) => this.shadowRoot!.append(component));
+    this.components.forEach((component, index) => {
+      this.shadowRoot!.append(component);
+
+      if (index < this.components.length - 1) {
+        this.shadowRoot!.append("/");
+      }
+    });
   }
 
   private setStyle() {
