@@ -25,9 +25,10 @@ export class JXRPathComponent extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
 
-    const span = document.createElement("span");
-    span.innerText = link.name;
-    this.shadowRoot!.append(span);
+    const a_element = document.createElement("a");
+    a_element.innerText = link.name;
+    a_element.href = link.hyperlink;
+    this.shadowRoot!.append(a_element);
   }
 }
 
