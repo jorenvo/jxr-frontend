@@ -27,6 +27,10 @@ export class JXRResult extends HTMLElement {
   private setStyle() {
     const style = document.createElement("style");
     style.textContent = `
+      * {
+        font-family: monospace;
+      }
+
       a {
         color: unset;
         text-decoration: unset;
