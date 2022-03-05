@@ -15,11 +15,13 @@ export class JXRResult extends HTMLElement {
 
     const lineNumberA = document.createElement("a");
     lineNumberA.setAttribute("href", this.link);
+    lineNumberA.classList.add("line-number");
     lineNumberA.innerText = this.lineNumber;
 
     const lineA = document.createElement("a");
     lineA.setAttribute("href", this.link);
-    lineA.innerText = this.line;
+    lineA.classList.add("line");
+    lineA.innerText = this.line.trim();
 
     this.shadowRoot!.append(lineNumberA, lineA);
   }
@@ -38,6 +40,13 @@ export class JXRResult extends HTMLElement {
 
       a:hover {
         text-decoration: underline;
+      }
+
+      .line-number {
+        display: inline-block;
+        width: 40px;
+        margin-right: 10px;
+        text-align: right;
       }
     `;
     this.shadowRoot!.append(style);
