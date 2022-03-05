@@ -1,15 +1,22 @@
 import { JXRPath } from "./component_path.js";
 import { JXRResult } from "./component_result.js";
 
+let last_search_promise;
 const query_element = document.getElementById("query")!;
 const results_element = document.getElementById("results")!;
 
-query_element.addEventListener("input", async (e: Event) => {
-  const new_query = (e.target! as HTMLInputElement).value;
-
-  const response = await fetch(
-    `http://localhost:8081/search?query=${encodeURIComponent(new_query)}`
+async function search(query: string) {
+  const search_promise = fetch(
+    `http://localhost:8081/search?query=${encodeURIComponent(query)}`
   );
+  last_search_promise = search_promise;
+
+  const response = await last_search_promise;
+
+  // check if there's a more recent search
+  if (search_promise !== last_search_promise) {
+    return;
+  }
 
   const rg_results: any[] = await response.json();
 
@@ -29,4 +36,16 @@ query_element.addEventListener("input", async (e: Event) => {
       );
     }
   }
+}
+
+let delayed_search: number | undefined;
+query_element.addEventListener("input", async (e: Event) => {
+  if (delayed_search) {
+    window.clearTimeout(delayed_search);
+  }
+
+  delayed_search = window.setTimeout(() => {
+    const new_query = (e.target! as HTMLInputElement).value;
+    search(new_query);
+  }, 300);
 });
