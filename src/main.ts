@@ -25,7 +25,7 @@ query_element.addEventListener("input", async (e: Event) => {
       results_element.appendChild(new JXRPath(links));
     } else if (result.type === "match") {
       results_element.appendChild(
-        new JXRResult(result.data.line_number, result.data.lines.text)
+        new JXRResult(result.data.line_number, result.data.lines.text, "/dummy")
       );
     }
   }
