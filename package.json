@@ -5,7 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "prebuild": "rm -rvf dist/*",
-    "build": "mkdir -p $PWD/dist && tsc && cp $PWD/src/*.{html,css,js} dist/",
+    "build": "mkdir -p $PWD/dist && tsc && cp $PWD/src/*.{html,css} dist/ && cp -r $PWD/jxr-indexed-code dist/jxr-code",
     "watch-tsc": "tsc --watch",
     "watch": "npm-watch",
     "test": "./prep_tests.sh && mocha -r ts-node/register test_src/*.spec.ts; rm -r $PWD/test_src",
