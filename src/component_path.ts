@@ -7,9 +7,14 @@ export class JXRPath extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
 
-    this.setStyle();
+    this.components = links.map((link) => {
+      const component = document.createElement("a");
+      component.setAttribute("is", "jxr-path-component");
+      component.setAttribute("href", link.hyperlink);
+      component.innerText = link.name;
+      return component;
+    });
 
-    this.components = links.map((link) => new JXRPathComponent(link));
     this.components.forEach((component, index) => {
       this.shadowRoot!.append(component);
 
@@ -18,25 +23,14 @@ export class JXRPath extends HTMLElement {
       }
     });
   }
-
-  private setStyle() {
-    const style = document.createElement("style");
-    style.textContent = ":host { display: block; }";
-    this.shadowRoot!.append(style);
-  }
 }
 
-export class JXRPathComponent extends HTMLElement {
-  constructor(link: Link) {
+export class JXRPathComponent extends HTMLAnchorElement {
+  constructor() {
     super();
     this.attachShadow({ mode: "open" });
-
-    const a_element = document.createElement("a");
-    a_element.innerText = link.name;
-    a_element.href = link.hyperlink;
-    this.shadowRoot!.append(a_element);
   }
 }
 
 customElements.define("jxr-path", JXRPath);
-customElements.define("jxr-path-component", JXRPathComponent);
+customElements.define("jxr-path-component", JXRPathComponent, { extends: "a" });
