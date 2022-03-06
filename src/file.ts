@@ -19,8 +19,6 @@ function setup_search() {
 }
 
 function populate_code_table(code: string) {
-  // <pre><code id="file"></code></pre>
-
   code.split("\n").forEach((line, index) => {
     const number_td = document.createElement("td");
     const code_td = document.createElement("td");
@@ -39,6 +37,14 @@ function populate_code_table(code: string) {
     const tr = document.createElement("tr");
     tr.append(number_td, code_td);
     document.getElementById("code-table")!.append(tr);
+
+    // abstract class CodeTableElement {
+    //
+    // }
+
+    // outside: const table = new JXRCodeTable("code-table");
+    // const code_line = new CodeLine(index + 1, line)
+    // table.append(code_line, 1);
   });
 }
 

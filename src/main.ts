@@ -1,11 +1,14 @@
-import { JXRPath } from "./component_path.js";
-import { JXRResult } from "./component_result.js";
 import { JXRSearchUI } from "./component_search.js";
+import {
+  JXRCodeTable,
+  JXRCodeTableLine,
+  JXRCodeTableNav,
+} from "./component_code_table.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
 let last_search_promise;
-const results_element = document.getElementById("results")!;
+const code_table = new JXRCodeTable("code-table-placeholder");
 
 async function search(query: string) {
   if (query.length === 0) {
@@ -31,7 +34,7 @@ async function search(query: string) {
 
   const rg_results: any[] = await response.json();
 
-  results_element.innerHTML = "";
+  code_table.clear();
 
   for (let result of rg_results) {
     if (result.type === "begin") {
@@ -45,7 +48,8 @@ async function search(query: string) {
 
         return { name: part, hyperlink: hyperlink };
       });
-      results_element.appendChild(new JXRPath(links));
+
+      code_table.append(new JXRCodeTableNav(links));
     } else if (result.type === "match") {
       const line = result.data.lines.text;
 
@@ -56,8 +60,8 @@ async function search(query: string) {
         continue;
       }
 
-      results_element.appendChild(
-        new JXRResult(result.data.line_number, line, "/dummy")
+      code_table.append(
+        new JXRCodeTableLine(result.data.line_number, line, "/dummy")
       );
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
