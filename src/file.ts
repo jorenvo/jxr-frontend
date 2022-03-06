@@ -31,7 +31,7 @@ function populate_code_table(code: string) {
     number_td.append(pre);
 
     pre = document.createElement("pre");
-    const code_el = document.createElement("code");
+    const code_el = document.createElement("code"); // TODO: language based on extension
     code_el.innerText = line;
     pre.append(code_el);
     code_td.append(pre);
