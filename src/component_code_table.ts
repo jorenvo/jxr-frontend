@@ -12,6 +12,7 @@ export class JXRCodeTable {
   constructor(id: string) {
     this.table_elements = [];
     this.dom = document.createElement("table");
+    this.dom.classList.add("code-table");
     document.getElementById(id)!.replaceWith(this.dom);
   }
 
@@ -86,6 +87,7 @@ export class JXRCodeTableLine implements JXRCodeTableElementInterface {
 
     const tr = document.createElement("tr");
     let td = document.createElement("td");
+    td.classList.add("line-number");
     td.append(line_number_a);
     tr.append(td);
 

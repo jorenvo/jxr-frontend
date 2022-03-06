@@ -12,7 +12,20 @@ pre {
   margin: 0px;
 }
 
-.line-number {
-  text-align: right;
+.code-table {
+  font-family: monospace;
+}
+
+.code-table a {
+  color: unset;
+  text-decoration: unset;
+}
+
+.code-table a:hover {
+  text-decoration: underline;
+}
+
+.code-table .line-number {
   padding-right: 8px;
+  text-align: right;
 }
