@@ -5,7 +5,6 @@ import { JXRSearchUI } from "./component_search.js";
 const MAX_LENGTH_MATCH = 1_000;
 
 let last_search_promise;
-let delayed_search: number | undefined;
 const results_element = document.getElementById("results")!;
 
 async function search(query: string) {
@@ -41,7 +40,7 @@ async function search(query: string) {
       const links = path_text.split("/").map((part, index, parts) => {
         let hyperlink = part;
         if (index === parts.length - 1) {
-          hyperlink = `jxr-code/${path_text}`;
+          hyperlink = `file.html?path=${encodeURIComponent(path_text)}`;
         }
 
         return { name: part, hyperlink: hyperlink };
@@ -68,23 +67,11 @@ async function search(query: string) {
   }
 }
 
-const search_element = new JXRSearchUI("search-placeholder").getDom();
-search_element.focus();
-
-search_element.addEventListener("input", async (e: Event) => {
-  if (delayed_search) {
-    window.clearTimeout(delayed_search);
-  }
-
-  delayed_search = window.setTimeout(() => {
-    const new_query = (e.target! as HTMLInputElement).value;
-    search(new_query);
-  }, 300);
-});
+const search_element = new JXRSearchUI("search-placeholder", search).getDom();
+search_element.focus(); // TODO: doesn't work in Safari
 
 const url = new URL(window.location.href);
 const initial_search = url.searchParams.get("search");
-
 if (initial_search) {
   search_element.value = initial_search;
   search(initial_search);
