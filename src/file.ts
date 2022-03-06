@@ -18,13 +18,38 @@ function setup_search() {
   new JXRSearchUI("search-placeholder", redirect).getDom();
 }
 
+function populate_code_table(code: string) {
+  // <pre><code id="file"></code></pre>
+
+  code.split("\n").forEach((line, index) => {
+    const number_td = document.createElement("td");
+    const code_td = document.createElement("td");
+
+    let pre = document.createElement("pre");
+    pre.classList.add("line-number");
+    pre.textContent = String(index + 1);
+    number_td.append(pre);
+
+    pre = document.createElement("pre");
+    const code_el = document.createElement("code");
+    code_el.innerText = line;
+    pre.append(code_el);
+    code_td.append(pre);
+
+    const tr = document.createElement("tr");
+    tr.append(number_td, code_td);
+    document.getElementById("code-table")!.append(tr);
+  });
+}
+
 async function load_file() {
   const url = new URL(window.location.href);
   const path = url.searchParams.get("path");
 
   const response = await fetch(`jxr-code/${path}`);
-  document.getElementById("file")!.textContent = await response.text();
+  populate_code_table(await response.text());
 
+  // TODO: use web worker: https://github.com/highlightjs/highlight.js/#using-web-workers
   window.hljs.highlightAll();
 }
 
