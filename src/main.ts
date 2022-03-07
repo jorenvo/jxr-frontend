@@ -5,6 +5,7 @@ import {
   JXRCodeTableNav,
 } from "./component_code_table.js";
 import { getExtension, highlightCode } from "./utils.js";
+import { JXRTreeSelector } from "./component_tree.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
@@ -83,16 +84,25 @@ async function search(query: string) {
   highlightCode();
 }
 
-async function main() {
-  const search_element = new JXRSearchUI("search-placeholder", search).getDom();
-  search_element.focus(); // TODO: doesn't work in Safari
-
+function do_initial_search(search_element: HTMLInputElement) {
   const url = new URL(window.location.href);
   const initial_search = url.searchParams.get("search");
   if (initial_search) {
     search_element.value = initial_search;
     search(initial_search);
   }
+}
+
+async function main() {
+  const search_element = new JXRSearchUI("search-placeholder", search).getDom();
+  search_element.focus(); // TODO: doesn't work in Safari
+
+  const tree_selector = new JXRTreeSelector("tree-placeholder", [
+    "dummy1",
+    "dummy2",
+  ]);
+
+  do_initial_search(search_element);
 }
 
 main();
