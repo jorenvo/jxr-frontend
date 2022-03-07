@@ -79,6 +79,8 @@ async function search(query: string) {
       console.log(`Backend search took ${time} and matched ${lines} lines`);
     }
   }
+
+  highlightCode();
 }
 
 async function main() {
@@ -89,8 +91,7 @@ async function main() {
   const initial_search = url.searchParams.get("search");
   if (initial_search) {
     search_element.value = initial_search;
-    await search(initial_search);
-    highlightCode();
+    search(initial_search);
   }
 }
 
