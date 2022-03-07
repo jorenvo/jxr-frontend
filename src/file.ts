@@ -3,6 +3,7 @@ import {
   JXRCodeTableLineClickable,
 } from "./component_code_table.js";
 import { JXRSearchUI } from "./component_search.js";
+import { getExtension } from "./utils.js";
 
 interface hljsInterface {
   highlightAll: () => void;
@@ -35,7 +36,7 @@ function populate_code_table(code: string, extension: string) {
 async function load_file() {
   const url = new URL(window.location.href);
   const path = url.searchParams.get("path")!;
-  const extension = path.split(".")[1];
+  const extension = getExtension(path);
 
   const response = await fetch(`jxr-code/${path}`);
   populate_code_table(await response.text(), extension);

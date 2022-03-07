@@ -86,7 +86,7 @@ export class JXRCodeTableLineLinked implements JXRCodeTableElementInterface {
       </td>
       <td>
         <a href="${this.link}">
-          <pre><code>${this.line}</code></pre>
+          <pre><code>${escapeHtml(this.line)}</code></pre>
         </a>
       </td>
     `;

@@ -11,3 +11,8 @@ export function escapeHtml(unsafe: string) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+export function getExtension(path: string): string {
+  const parts = path.split(".");
+  return parts[parts.length - 1];
+}
