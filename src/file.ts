@@ -1,16 +1,6 @@
 import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
 import { JXRSearchUI } from "./component_search.js";
-import { getExtension } from "./utils.js";
-
-interface hljsInterface {
-  highlightAll: () => void;
-}
-
-declare global {
-  interface Window {
-    hljs: hljsInterface;
-  }
-}
+import { getExtension, highlightCode } from "./utils.js";
 
 const code_table = new JXRCodeTable("code-table-placeholder");
 
@@ -36,8 +26,12 @@ async function load_file() {
   const response = await fetch(`jxr-code/${path}`);
   populate_code_table(await response.text(), extension);
 
-  // TODO: use web worker: https://github.com/highlightjs/highlight.js/#using-web-workers
-  window.hljs.highlightAll();
+  highlightCode();
+
+  const hash = window.location.hash;
+  if (hash) {
+    document.getElementById(hash.replace("#", ""))!.scrollIntoView();
+  }
 }
 
 setup_search();

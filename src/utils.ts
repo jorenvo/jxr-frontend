@@ -1,3 +1,13 @@
+interface hljsInterface {
+  highlightAll: () => void;
+}
+
+declare global {
+  interface Window {
+    hljs: hljsInterface;
+  }
+}
+
 export interface Link {
   name: string;
   hyperlink: string;
@@ -15,4 +25,9 @@ export function escapeHtml(unsafe: string) {
 export function getExtension(path: string): string {
   const parts = path.split(".");
   return parts[parts.length - 1];
+}
+
+export function highlightCode() {
+  // TODO: use web worker: https://github.com/highlightjs/highlight.js/#using-web-workers
+  window.hljs.highlightAll();
 }

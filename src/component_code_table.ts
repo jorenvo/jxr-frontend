@@ -64,7 +64,7 @@ export class JXRCodeTableNav implements JXRCodeTableElementInterface {
 
 export class JXRCodeTableLine implements JXRCodeTableElementInterface {
   private dom: HTMLTableRowElement;
-  private lineNumber: string;
+  private line_number: string;
   private line: string;
   private extension: string;
   private link: string | undefined;
@@ -75,7 +75,7 @@ export class JXRCodeTableLine implements JXRCodeTableElementInterface {
     extension: string,
     link?: string
   ) {
-    this.lineNumber = line_number;
+    this.line_number = line_number;
     this.line = line;
     this.extension = extension;
     this.link = link;
@@ -97,8 +97,8 @@ export class JXRCodeTableLine implements JXRCodeTableElementInterface {
   private constructDom(): HTMLTableRowElement {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="line-number">
-        ${this.wrapInLink(this.lineNumber)}
+      <td class="line-number" id="line-${this.line_number}">
+        ${this.wrapInLink(this.line_number)}
       </td>
       <td>
         ${this.wrapInLink(

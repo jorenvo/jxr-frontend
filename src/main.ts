@@ -4,7 +4,7 @@ import {
   JXRCodeTableLine,
   JXRCodeTableNav,
 } from "./component_code_table.js";
-import { getExtension } from "./utils.js";
+import { getExtension, highlightCode } from "./utils.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
@@ -38,15 +38,16 @@ async function search(query: string) {
   code_table.clear();
 
   let extension = "";
+  let file_path = "";
   for (let result of rg_results) {
     if (result.type === "begin") {
-      const path_text: string = result.data.path.text;
-      extension = getExtension(path_text);
+      file_path = result.data.path.text;
+      extension = getExtension(file_path);
 
-      const links = path_text.split("/").map((part, index, parts) => {
+      const links = file_path.split("/").map((part, index, parts) => {
         let hyperlink = part;
         if (index === parts.length - 1) {
-          hyperlink = `file.html?path=${encodeURIComponent(path_text)}`;
+          hyperlink = `file.html?path=${encodeURIComponent(file_path)}`;
         }
 
         return { name: part, hyperlink: hyperlink };
@@ -63,8 +64,14 @@ async function search(query: string) {
         continue;
       }
 
+      const line_number = result.data.line_number;
       code_table.append(
-        new JXRCodeTableLine(result.data.line_number, line, extension, "/dummy")
+        new JXRCodeTableLine(
+          line_number,
+          line,
+          extension,
+          `file.html?path=${encodeURIComponent(file_path)}#line-${line_number}`
+        )
       );
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
@@ -74,12 +81,17 @@ async function search(query: string) {
   }
 }
 
-const search_element = new JXRSearchUI("search-placeholder", search).getDom();
-search_element.focus(); // TODO: doesn't work in Safari
+async function main() {
+  const search_element = new JXRSearchUI("search-placeholder", search).getDom();
+  search_element.focus(); // TODO: doesn't work in Safari
 
-const url = new URL(window.location.href);
-const initial_search = url.searchParams.get("search");
-if (initial_search) {
-  search_element.value = initial_search;
-  search(initial_search);
+  const url = new URL(window.location.href);
+  const initial_search = url.searchParams.get("search");
+  if (initial_search) {
+    search_element.value = initial_search;
+    await search(initial_search);
+    highlightCode();
+  }
 }
+
+main();
