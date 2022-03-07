@@ -1,7 +1,4 @@
-import {
-  JXRCodeTable,
-  JXRCodeTableLineClickable,
-} from "./component_code_table.js";
+import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
 import { JXRSearchUI } from "./component_search.js";
 import { getExtension } from "./utils.js";
 
@@ -27,9 +24,7 @@ function setup_search() {
 
 function populate_code_table(code: string, extension: string) {
   code.split("\n").forEach((line, index) => {
-    code_table.append(
-      new JXRCodeTableLineClickable(String(index + 1), line, extension)
-    );
+    code_table.append(new JXRCodeTableLine(String(index + 1), line, extension));
   });
 }
 

@@ -2,7 +2,6 @@ import { Link, escapeHtml } from "./utils.js";
 
 abstract class JXRCodeTableElementInterface {
   abstract getDom(): HTMLTableRowElement;
-  // abstract handleClick(e: MouseEvent): void;
 }
 
 export class JXRCodeTable {
@@ -63,64 +62,50 @@ export class JXRCodeTableNav implements JXRCodeTableElementInterface {
   }
 }
 
-export class JXRCodeTableLineLinked implements JXRCodeTableElementInterface {
-  private dom: HTMLTableRowElement;
-  private lineNumber: string;
-  private line: string;
-  private link: string;
-
-  constructor(line_number: string, line: string, link: string) {
-    this.lineNumber = line_number;
-    this.line = line;
-    this.link = link;
-    this.dom = this.constructDom();
-  }
-
-  private constructDom(): HTMLTableRowElement {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="line-number">
-        <a href="${this.link}">
-          ${this.lineNumber}
-        </a>
-      </td>
-      <td>
-        <a href="${this.link}">
-          <pre><code>${escapeHtml(this.line)}</code></pre>
-        </a>
-      </td>
-    `;
-    return tr;
-  }
-
-  getDom(): HTMLTableRowElement {
-    return this.dom;
-  }
-}
-
-export class JXRCodeTableLineClickable implements JXRCodeTableElementInterface {
+export class JXRCodeTableLine implements JXRCodeTableElementInterface {
   private dom: HTMLTableRowElement;
   private lineNumber: string;
   private line: string;
   private extension: string;
+  private link: string | undefined;
 
-  constructor(line_number: string, line: string, extension: string) {
+  constructor(
+    line_number: string,
+    line: string,
+    extension: string,
+    link?: string
+  ) {
     this.lineNumber = line_number;
     this.line = line;
     this.extension = extension;
+    this.link = link;
     this.dom = this.constructDom();
+  }
+
+  private wrapInLink(content: string): string {
+    if (this.link) {
+      return `
+        <a href="${this.link}">
+          ${content}
+        </a>
+      `;
+    } else {
+      return content;
+    }
   }
 
   private constructDom(): HTMLTableRowElement {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="line-number">
-        ${this.lineNumber}
+        ${this.wrapInLink(this.lineNumber)}
       </td>
       <td>
-        <pre><code class="language-${this.extension}">${escapeHtml(
-      this.line
-    )}</code></pre>
+        ${this.wrapInLink(
+          `<pre><code class="language-${this.extension}">${escapeHtml(
+            this.line
+          )}</code></pre>`
+        )}
       </td>
     `;
     return tr;

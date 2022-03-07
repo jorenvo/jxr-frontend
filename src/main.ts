@@ -1,9 +1,10 @@
 import { JXRSearchUI } from "./component_search.js";
 import {
   JXRCodeTable,
-  JXRCodeTableLineLinked,
+  JXRCodeTableLine,
   JXRCodeTableNav,
 } from "./component_code_table.js";
+import { getExtension } from "./utils.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
@@ -36,9 +37,11 @@ async function search(query: string) {
 
   code_table.clear();
 
+  let extension = "";
   for (let result of rg_results) {
     if (result.type === "begin") {
       const path_text: string = result.data.path.text;
+      extension = getExtension(path_text);
 
       const links = path_text.split("/").map((part, index, parts) => {
         let hyperlink = part;
@@ -61,7 +64,7 @@ async function search(query: string) {
       }
 
       code_table.append(
-        new JXRCodeTableLineLinked(result.data.line_number, line, "/dummy")
+        new JXRCodeTableLine(result.data.line_number, line, extension, "/dummy")
       );
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
