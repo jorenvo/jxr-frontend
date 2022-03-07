@@ -93,14 +93,19 @@ function do_initial_search(search_element: HTMLInputElement) {
   }
 }
 
+async function get_trees(): Promise<string[]> {
+  const response = await fetch("http://localhost:8081/trees");
+  return await response.json();
+}
+
 async function main() {
   const search_element = new JXRSearchUI("search-placeholder", search).getDom();
   search_element.focus(); // TODO: doesn't work in Safari
 
-  const tree_selector = new JXRTreeSelector("tree-placeholder", [
-    "dummy1",
-    "dummy2",
-  ]);
+  const tree_selector = new JXRTreeSelector(
+    "tree-placeholder",
+    await get_trees()
+  );
 
   do_initial_search(search_element);
 }
