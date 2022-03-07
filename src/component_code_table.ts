@@ -1,4 +1,4 @@
-import { Link } from "./utils.js";
+import { Link, escapeHtml } from "./utils.js";
 
 abstract class JXRCodeTableElementInterface {
   abstract getDom(): HTMLTableRowElement;
@@ -63,7 +63,7 @@ export class JXRCodeTableNav implements JXRCodeTableElementInterface {
   }
 }
 
-export class JXRCodeTableLine implements JXRCodeTableElementInterface {
+export class JXRCodeTableLineLinked implements JXRCodeTableElementInterface {
   private dom: HTMLTableRowElement;
   private lineNumber: string;
   private line: string;
@@ -77,24 +77,52 @@ export class JXRCodeTableLine implements JXRCodeTableElementInterface {
   }
 
   private constructDom(): HTMLTableRowElement {
-    const line_number_a = document.createElement("a");
-    line_number_a.setAttribute("href", this.link);
-    line_number_a.innerText = this.lineNumber;
-
-    const line_a = document.createElement("a");
-    line_a.setAttribute("href", this.link);
-    line_a.innerText = this.line.trim();
-
     const tr = document.createElement("tr");
-    let td = document.createElement("td");
-    td.classList.add("line-number");
-    td.append(line_number_a);
-    tr.append(td);
+    tr.innerHTML = `
+      <td class="line-number">
+        <a href="${this.link}">
+          ${this.lineNumber}
+        </a>
+      </td>
+      <td>
+        <a href="${this.link}">
+          <pre><code>${this.line}</code></pre>
+        </a>
+      </td>
+    `;
+    return tr;
+  }
 
-    td = document.createElement("td");
-    td.append(line_a);
-    tr.append(td);
+  getDom(): HTMLTableRowElement {
+    return this.dom;
+  }
+}
 
+export class JXRCodeTableLineClickable implements JXRCodeTableElementInterface {
+  private dom: HTMLTableRowElement;
+  private lineNumber: string;
+  private line: string;
+  private extension: string;
+
+  constructor(line_number: string, line: string, extension: string) {
+    this.lineNumber = line_number;
+    this.line = line;
+    this.extension = extension;
+    this.dom = this.constructDom();
+  }
+
+  private constructDom(): HTMLTableRowElement {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="line-number">
+        ${this.lineNumber}
+      </td>
+      <td>
+        <pre><code class="language-${this.extension}">${escapeHtml(
+      this.line
+    )}</code></pre>
+      </td>
+    `;
     return tr;
   }
 

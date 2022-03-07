@@ -1,7 +1,7 @@
 import { JXRSearchUI } from "./component_search.js";
 import {
   JXRCodeTable,
-  JXRCodeTableLine,
+  JXRCodeTableLineLinked,
   JXRCodeTableNav,
 } from "./component_code_table.js";
 
@@ -51,7 +51,7 @@ async function search(query: string) {
 
       code_table.append(new JXRCodeTableNav(links));
     } else if (result.type === "match") {
-      const line = result.data.lines.text;
+      const line = result.data.lines.text.trim();
 
       if (line.length > MAX_LENGTH_MATCH) {
         console.warn(
@@ -61,7 +61,7 @@ async function search(query: string) {
       }
 
       code_table.append(
-        new JXRCodeTableLine(result.data.line_number, line, "/dummy")
+        new JXRCodeTableLineLinked(result.data.line_number, line, "/dummy")
       );
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
