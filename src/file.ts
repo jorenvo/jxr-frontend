@@ -9,7 +9,7 @@ function setup_search() {
     window.location.href = `/?search=${encodeURIComponent(query)}`;
   }
 
-  new JXRSearchUI("search-placeholder", redirect).getDom();
+  // new JXRSearchUI("search-placeholder", redirect).getDom();
 }
 
 function populate_code_table(code: string, extension: string) {

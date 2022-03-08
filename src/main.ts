@@ -5,20 +5,21 @@ import {
   JXRCodeTableNav,
 } from "./component_code_table.js";
 import { getExtension, highlightCode } from "./utils.js";
-import { JXRTreeSelector } from "./component_tree.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
 let last_search_promise;
 const code_table = new JXRCodeTable("code-table-placeholder");
 
-async function search(query: string) {
+async function search(tree: string, query: string) {
   if (query.length === 0) {
     return;
   }
 
   const search_promise = fetch(
-    `http://localhost:8081/search?query=${encodeURIComponent(query)}`
+    `http://localhost:8081/search?tree=${encodeURIComponent(
+      tree
+    )}&query=${encodeURIComponent(query)}`
   );
   last_search_promise = search_promise;
 
@@ -31,8 +32,6 @@ async function search(query: string) {
   }
 
   console.log(`Processing search result for "${query}"`);
-
-  history.replaceState({}, "", `/?search=${encodeURIComponent(query)}`);
 
   const rg_results: any[] = await response.json();
 
@@ -84,30 +83,17 @@ async function search(query: string) {
   highlightCode();
 }
 
-function do_initial_search(search_element: HTMLInputElement) {
-  const url = new URL(window.location.href);
-  const initial_search = url.searchParams.get("search");
-  if (initial_search) {
-    search_element.value = initial_search;
-    search(initial_search);
-  }
-}
-
 async function get_trees(): Promise<string[]> {
   const response = await fetch("http://localhost:8081/trees");
   return await response.json();
 }
 
 async function main() {
-  const search_element = new JXRSearchUI("search-placeholder", search).getDom();
-  search_element.focus(); // TODO: doesn't work in Safari
-
-  const tree_selector = new JXRTreeSelector(
-    "tree-placeholder",
-    await get_trees()
+  const searchUI = new JXRSearchUI(
+    "search-placeholder",
+    await get_trees(),
+    search
   );
-
-  do_initial_search(search_element);
 }
 
 main();
