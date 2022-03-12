@@ -9,6 +9,7 @@ import { getExtension, get_trees, highlightCode } from "./utils.js";
 const MAX_LENGTH_MATCH = 1_000;
 
 let last_search_promise;
+let search_ui: JXRSearchUI | undefined;
 const code_table = new JXRCodeTable("code-table-placeholder");
 
 async function search(tree: string, query: string) {
@@ -47,7 +48,11 @@ async function search(tree: string, query: string) {
       const links = file_path.split("/").map((part, index, parts) => {
         let hyperlink = part;
         if (index === parts.length - 1) {
-          hyperlink = `file.html?path=${encodeURIComponent(file_path)}`;
+          const params = [
+            ...search_ui!.serialize(!"without search"),
+            `path=${encodeURIComponent(file_path)}`,
+          ].join("&");
+          hyperlink = `file.html?${params}`;
         }
 
         return { name: part, hyperlink: hyperlink };
@@ -65,14 +70,16 @@ async function search(tree: string, query: string) {
       }
 
       const line_number = result.data.line_number;
+      const params = [
+        ...search_ui!.serialize(!"without search"),
+        `path=${encodeURIComponent(file_path)}`,
+      ].join("&");
       code_table.append(
         new JXRCodeTableLine(
           line_number,
           line,
           extension,
-          `file.html?tree=${encodeURIComponent(tree)}&path=${encodeURIComponent(
-            file_path
-          )}#line-${line_number}`
+          `file.html?${params}#line-${line_number}`
         )
       );
     } else if (result.type === "summary") {
@@ -86,11 +93,7 @@ async function search(tree: string, query: string) {
 }
 
 async function main() {
-  const searchUI = new JXRSearchUI(
-    "search-placeholder",
-    await get_trees(),
-    search
-  );
+  search_ui = new JXRSearchUI("search-placeholder", await get_trees(), search);
 }
 
 main();

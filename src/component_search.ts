@@ -64,7 +64,7 @@ export class JXRSearchUI {
     history.replaceState(
       {},
       "",
-      `/?tree=${encodeURIComponent(tree)}&search=${encodeURIComponent(query)}`
+      `/?${this.serialize(!!"include search").join("&")}`
     );
     this.search_fn(tree, query);
   }
@@ -79,6 +79,17 @@ export class JXRSearchUI {
         this.search();
       }, JXRSearchUI.SEARCH_DELAY_MS);
     });
+  }
+
+  serialize(include_search: boolean): string[] {
+    const params = [];
+    params.push(`tree=${encodeURIComponent(this.getTreeSelector().getTree())}`);
+
+    if (include_search) {
+      params.push(`search=${encodeURIComponent(this.getQuery())}`);
+    }
+
+    return params;
   }
 
   getDom() {
