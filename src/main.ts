@@ -4,7 +4,7 @@ import {
   JXRCodeTableLine,
   JXRCodeTableNav,
 } from "./component_code_table.js";
-import { getExtension, highlightCode } from "./utils.js";
+import { getExtension, get_trees, highlightCode } from "./utils.js";
 
 const MAX_LENGTH_MATCH = 1_000;
 
@@ -70,7 +70,9 @@ async function search(tree: string, query: string) {
           line_number,
           line,
           extension,
-          `file.html?path=${encodeURIComponent(file_path)}#line-${line_number}`
+          `file.html?tree=${encodeURIComponent(tree)}&path=${encodeURIComponent(
+            file_path
+          )}#line-${line_number}`
         )
       );
     } else if (result.type === "summary") {
@@ -81,11 +83,6 @@ async function search(tree: string, query: string) {
   }
 
   highlightCode();
-}
-
-async function get_trees(): Promise<string[]> {
-  const response = await fetch("http://localhost:8081/trees");
-  return await response.json();
 }
 
 async function main() {

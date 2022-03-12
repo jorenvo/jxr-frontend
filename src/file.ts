@@ -1,15 +1,20 @@
 import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
 import { JXRSearchUI } from "./component_search.js";
-import { getExtension, highlightCode } from "./utils.js";
+import { getExtension, get_trees, highlightCode } from "./utils.js";
 
+let search_ui: JXRSearchUI | undefined;
 const code_table = new JXRCodeTable("code-table-placeholder");
 
-function setup_search() {
+async function setup_search() {
   async function redirect(query: string) {
     window.location.href = `/?search=${encodeURIComponent(query)}`;
   }
 
-  // new JXRSearchUI("search-placeholder", redirect).getDom();
+  search_ui = new JXRSearchUI(
+    "search-placeholder",
+    await get_trees(),
+    redirect
+  );
 }
 
 function populate_code_table(code: string, extension: string) {
@@ -22,8 +27,9 @@ async function load_file() {
   const url = new URL(window.location.href);
   const path = url.searchParams.get("path")!;
   const extension = getExtension(path);
-
-  const response = await fetch(`jxr-code/${path}`);
+  const response = await fetch(
+    `jxr-code/${search_ui!.getTreeSelector().getTree()}/${path}`
+  );
   populate_code_table(await response.text(), extension);
 
   highlightCode();
@@ -34,5 +40,9 @@ async function load_file() {
   }
 }
 
-setup_search();
-load_file();
+async function main() {
+  await setup_search();
+  load_file();
+}
+
+main();

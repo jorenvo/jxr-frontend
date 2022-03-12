@@ -31,3 +31,8 @@ export function highlightCode() {
   // TODO: use web worker: https://github.com/highlightjs/highlight.js/#using-web-workers
   window.hljs.highlightAll();
 }
+
+export async function get_trees(): Promise<string[]> {
+  const response = await fetch("http://localhost:8081/trees");
+  return await response.json();
+}

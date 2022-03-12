@@ -37,9 +37,15 @@ export class JXRSearchUI {
     const url = new URL(window.location.href);
     const initial_tree = url.searchParams.get("tree");
     const initial_search = url.searchParams.get("search");
-    if (initial_tree && initial_search) {
+    if (initial_tree) {
       this.tree_selector.setTree(initial_tree);
+    }
+
+    if (initial_search) {
       this.setQuery(initial_search);
+    }
+
+    if (initial_tree && initial_search) {
       this.search_fn(initial_tree, initial_search);
     }
   }
