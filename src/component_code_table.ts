@@ -5,6 +5,8 @@ abstract class JXRCodeTableElementInterface {
   abstract getDom(): HTMLTableRowElement;
 }
 
+// TODO: create subclass for symbol-click searching. It will take search_ui
+// and popup_id instead.
 export class JXRCodeTable {
   private table_elements: JXRCodeTableElementInterface[];
   private dom: HTMLTableElement;
