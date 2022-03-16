@@ -3,7 +3,7 @@ import { JXRSearchUI } from "./component_search.js";
 import { getExtension, get_trees, highlightCode } from "./utils.js";
 
 let search_ui: JXRSearchUI | undefined;
-const code_table = new JXRCodeTable("code-table-placeholder");
+let code_table: JXRCodeTable | undefined;
 
 async function setup_search() {
   async function redirect(query: string) {
@@ -15,11 +15,19 @@ async function setup_search() {
     await get_trees(),
     redirect
   );
+
+  code_table = new JXRCodeTable(
+    "code-table-placeholder",
+    search_ui,
+    "search-symbol-popup"
+  );
 }
 
 function populate_code_table(code: string, extension: string) {
   code.split("\n").forEach((line, index) => {
-    code_table.append(new JXRCodeTableLine(String(index + 1), line, extension));
+    code_table!.append(
+      new JXRCodeTableLine(String(index + 1), line, extension)
+    );
   });
 }
 

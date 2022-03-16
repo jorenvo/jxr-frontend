@@ -29,3 +29,15 @@ pre {
   padding-right: 8px;
   text-align: right;
 }
+
+#search-symbol-popup {
+  font-family: monospace;
+  position: absolute;
+  background-color: white;
+  border: 2px darkgrey solid;
+  padding: 5px;
+}
+
+.hide {
+  display: none;
+}

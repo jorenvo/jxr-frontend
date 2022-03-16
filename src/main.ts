@@ -10,7 +10,7 @@ const MAX_LENGTH_MATCH = 1_000;
 
 let last_search_promise;
 let search_ui: JXRSearchUI | undefined;
-const code_table = new JXRCodeTable("code-table-placeholder");
+let code_table: JXRCodeTable | undefined;
 
 async function search(tree: string, query: string) {
   if (query.length === 0) {
@@ -36,7 +36,7 @@ async function search(tree: string, query: string) {
 
   const rg_results: any[] = await response.json();
 
-  code_table.clear();
+  code_table!.clear();
 
   let extension = "";
   let file_path = "";
@@ -58,7 +58,7 @@ async function search(tree: string, query: string) {
         return { name: part, hyperlink: hyperlink };
       });
 
-      code_table.append(new JXRCodeTableNav(links));
+      code_table!.append(new JXRCodeTableNav(links));
     } else if (result.type === "match") {
       const line = result.data.lines.text.trim();
 
@@ -74,7 +74,7 @@ async function search(tree: string, query: string) {
         ...search_ui!.serialize(!"without search"),
         `path=${encodeURIComponent(file_path)}`,
       ].join("&");
-      code_table.append(
+      code_table!.append(
         new JXRCodeTableLine(
           line_number,
           line,
@@ -94,6 +94,7 @@ async function search(tree: string, query: string) {
 
 async function main() {
   search_ui = new JXRSearchUI("search-placeholder", await get_trees(), search);
+  code_table = new JXRCodeTable("code-table-placeholder", search_ui);
 }
 
 main();
