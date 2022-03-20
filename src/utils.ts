@@ -33,6 +33,6 @@ export function highlightCode() {
 }
 
 export async function get_trees(): Promise<string[]> {
-  const response = await fetch("http://localhost:8081/trees");
+  const response = await fetch("JXR_BACKEND/trees");
   return await response.json();
 }

@@ -18,7 +18,7 @@ async function search(tree: string, query: string) {
   }
 
   const search_promise = fetch(
-    `http://localhost:8081/search?tree=${encodeURIComponent(
+    `JXR_BACKEND/search?tree=${encodeURIComponent(
       tree
     )}&query=${encodeURIComponent(query)}`
   );
