@@ -1,5 +1,5 @@
 export class JXRSearchUI {
-  static SEARCH_DELAY_MS = 300;
+  static SEARCH_DELAY_MS = 99999999; // TODO: re-enable when performance improves
 
   private dom: HTMLInputElement;
   private tree_selector: JXRTreeSelector;
@@ -70,6 +70,12 @@ export class JXRSearchUI {
   }
 
   private setupHandler() {
+    this.dom.addEventListener("keypress", (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        this.search();
+      }
+    });
+
     this.dom.addEventListener("input", async (e: Event) => {
       if (this.delayed_search) {
         window.clearTimeout(this.delayed_search);
