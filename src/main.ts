@@ -85,7 +85,9 @@ async function search(tree: string, query: string) {
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
       const lines = result.data.stats.matched_lines;
-      console.log(`Backend search took ${time} and matched ${lines} lines`);
+      document.getElementById(
+        "stats-placeholder"
+      )!.innerText = `Backend search took ${time} and matched ${lines} lines`;
     }
   }
 

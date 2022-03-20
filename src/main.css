@@ -41,3 +41,7 @@ pre {
 .hide {
   display: none;
 }
+
+#stats-placeholder {
+  font-family: monospace;
+}
