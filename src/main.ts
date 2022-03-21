@@ -24,6 +24,10 @@ async function search(tree: string, query: string) {
   );
   last_search_promise = search_promise;
 
+  // clear before checking the request in case the request failed
+  document.getElementById("stats-placeholder")!.innerText = "";
+  code_table!.clear();
+
   const response = await last_search_promise;
 
   // check if there's a more recent search
@@ -35,8 +39,6 @@ async function search(tree: string, query: string) {
   console.log(`Processing search result for "${query}"`);
 
   const rg_results: any[] = await response.json();
-
-  code_table!.clear();
 
   let matches = 0;
   let extension = "";
