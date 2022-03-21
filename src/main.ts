@@ -28,7 +28,7 @@ async function search(tree: string, query: string) {
   // TODO: do this better
   document.getElementById("stats-placeholder")!.innerText = "";
   if (code_table) {
-    code_table!.clear();
+    code_table.clear();
   }
 
   const response = await last_search_promise;
