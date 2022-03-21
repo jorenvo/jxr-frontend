@@ -38,6 +38,7 @@ async function search(tree: string, query: string) {
 
   code_table!.clear();
 
+  let matches = 0;
   let extension = "";
   let file_path = "";
   for (let result of rg_results) {
@@ -60,6 +61,7 @@ async function search(tree: string, query: string) {
 
       code_table!.append(new JXRCodeTableNav(links));
     } else if (result.type === "match") {
+      matches++;
       const line = result.data.lines.text.trim();
 
       if (line.length > MAX_LENGTH_MATCH) {
@@ -85,9 +87,11 @@ async function search(tree: string, query: string) {
     } else if (result.type === "summary") {
       const time = result.data.elapsed_total.human;
       const lines = result.data.stats.matched_lines;
-      document.getElementById(
-        "stats-placeholder"
-      )!.innerText = `Backend search took ${time} and matched ${lines} lines`;
+      let stats = `Backend search took ${time} and matched ${lines} lines`;
+      if (result.data.stats.truncated) {
+        stats += ` (truncated to the first ${matches} lines)`;
+      }
+      document.getElementById("stats-placeholder")!.innerText = stats;
     }
   }
 
