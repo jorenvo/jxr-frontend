@@ -33,10 +33,12 @@ function populate_code_table(code: string, extension: string) {
 }
 
 async function setup_github(tree: string, path: string) {
-  const response = await fetch(`JXR_BACKEND/head?tree=${tree}`);
-  const json = await response.json();
-  console.log(`Using path: ${path}, tree: ${json}`);
-  new JXRGithubLinks("github-placeholder", path, json);
+  let response = await fetch(`JXR_BACKEND/head?tree=${tree}`);
+  const head = await response.json();
+  response = await fetch(`JXR_BACKEND/github?tree=${tree}`);
+  const repo = await response.json();
+  console.log(`Using path: ${path}, head: ${head}, repo: ${repo}`);
+  new JXRGithubLinks("github-placeholder", path, head, repo);
 }
 
 async function load_file() {
