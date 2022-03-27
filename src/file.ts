@@ -1,4 +1,5 @@
 import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
+import { JXRGithubLinks } from "./component_github.js";
 import { JXRSearchUI } from "./component_search.js";
 import { getExtension, get_trees, highlightCode } from "./utils.js";
 
@@ -31,13 +32,19 @@ function populate_code_table(code: string, extension: string) {
   });
 }
 
+async function setup_github(tree: string, path: string) {
+  const response = await fetch(`JXR_BACKEND/head?tree=${tree}`);
+  const json = await response.json();
+  console.log(`Using path: ${path}, tree: ${json}`);
+  new JXRGithubLinks("github-placeholder", path, json);
+}
+
 async function load_file() {
   const url = new URL(window.location.href);
   const path = url.searchParams.get("path")!;
   const extension = getExtension(path);
-  const response = await fetch(
-    `jxr-code/${search_ui!.getTreeSelector().getTree()}/${path}`
-  );
+  const tree = search_ui!.getTreeSelector().getTree();
+  const response = await fetch(`jxr-code/${tree}/${path}`);
   populate_code_table(await response.text(), extension);
 
   highlightCode();
@@ -46,6 +53,8 @@ async function load_file() {
   if (hash) {
     document.getElementById(hash.replace("#", ""))!.scrollIntoView();
   }
+
+  setup_github(tree, path);
 }
 
 async function main() {

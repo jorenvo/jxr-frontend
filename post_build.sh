@@ -12,3 +12,7 @@ cp libs/*.css dist/
 echo "Replacing JXR_BACKEND with ${JXR_BACKEND}...  "
 # Can't double quote ${...} because: echo "\" => \\
 sed -i.bak s/JXR_BACKEND/${JXR_BACKEND//\//\\\/}/g dist/js/*.js
+
+echo "Copying some test indexed code..."
+mkdir dist/jxr-code
+cp -r ~/Code/Aerial dist/jxr-code/
