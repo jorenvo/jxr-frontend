@@ -9,7 +9,9 @@
     "watch-tsc": "tsc --watch",
     "watch": "npm-watch",
     "test": "./prep_tests.sh && mocha -r ts-node/register test_src/*.spec.ts; rm -r $PWD/test_src",
-    "env": "env"
+    "env": "env",
+    "server-cors": "http-server -c-1 -p 8081 --cors --proxy 'http://127.0.0.1:8000'",
+    "server-dist": "http-server -c-1 ./dist"
   },
   "watch": {
     "build": {
@@ -27,7 +29,7 @@
     "typescript": "^4.6.2"
   },
   "devDependencies": {
-    "http-server": "^14.1.0",
+    "http-server": "^13.0.2",
     "npm-watch": "^0.11.0"
   }
 }
