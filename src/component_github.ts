@@ -19,8 +19,9 @@ export class JXRGithubLinks {
     const div = document.getElementById(id)!;
 
     div.innerHTML = `
-      <div><a href="${this.file_link('blob')}">Log</a></div>
+      <div><a href="${this.file_link('blob')}">Blob</a></div>
       <div><a href="${this.file_link('blame')}">Blame</a></div>
+      <div><a href="${this.file_link('commits')}">Log</a></div>
     `;
 
     return div;
