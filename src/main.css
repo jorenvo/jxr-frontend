@@ -16,12 +16,12 @@ pre {
   font-family: monospace;
 }
 
-.code-table a {
+a {
   color: unset;
   text-decoration: unset;
 }
 
-.code-table a:hover {
+a:hover {
   text-decoration: underline;
 }
 
@@ -44,4 +44,13 @@ pre {
 
 #stats-placeholder {
   font-family: monospace;
+}
+
+#github-placeholder {
+  font-family: monospace;
+  position: fixed;
+  right: 30px;
+  top: 50px;
+  border: 2px darkgrey solid;
+  padding: 5px;
 }
