@@ -7,8 +7,8 @@ let search_ui: JXRSearchUI | undefined;
 let code_table: JXRCodeTable | undefined;
 
 async function setup_search() {
-  async function redirect(query: string) {
-    window.location.href = `/?search=${encodeURIComponent(query)}`;
+  async function redirect(tree: string, query: string) {
+    window.location.href = `/?tree=${encodeURIComponent(tree)}&search=${encodeURIComponent(query)}`;
   }
 
   search_ui = new JXRSearchUI(
