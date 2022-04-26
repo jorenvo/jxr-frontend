@@ -24,7 +24,6 @@ export class JXRCodeTable {
     this.dom.addEventListener("click", this.on_click_symbol.bind(this));
     if (popup_id) {
       this.popup_dom = document.getElementById(popup_id)!;
-      this.popup_dom.addEventListener("click", this.on_click_popup.bind(this));
     }
   }
 
@@ -53,7 +52,6 @@ export class JXRCodeTable {
       symbol_regexp.test(range.toString()) &&
       range.endOffset < node.textContent!.length
     ) {
-      console.log(range.endOffset + 1);
       range.setEnd(node, range.endOffset + 1);
     }
 
@@ -64,22 +62,14 @@ export class JXRCodeTable {
     const clicked_symbol = range.toString().trim();
     if (clicked_symbol.length >= MIN_SYMBOL_LENGTH) {
       this.last_clicked_symbol = clicked_symbol;
-      this.popup_dom.innerText = `Search ${clicked_symbol}`;
+      this.search_ui.setQuery(this.last_clicked_symbol);
+      this.popup_dom.innerHTML = `<a href=${`/?${this.search_ui
+        .serialize(!!"include search")
+        .join("&")}`}>Search ${clicked_symbol}</a>`;
       this.popup_dom.style.top = `${event.pageY}px`;
       this.popup_dom.style.left = `${event.pageX}px`;
       this.popup_dom.classList.remove("hide");
     }
-  }
-
-  private on_click_popup(_e: MouseEvent) {
-    if (!this.last_clicked_symbol) {
-      return;
-    }
-
-    this.search_ui.setQuery(this.last_clicked_symbol);
-    window.location.href = `/?${this.search_ui
-      .serialize(!!"include search")
-      .join("&")}`;
   }
 
   append(table_element: JXRCodeTableElementInterface) {

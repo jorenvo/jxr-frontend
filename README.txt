@@ -5,7 +5,6 @@ TODO
 ====
 To avoid large recursive copies, symlink jxr-indexed-code instead.
 Bug on trailing files
-Turn popup into <a> so middle click works
 
 Run locally
 ===========
