@@ -1,14 +1,17 @@
+import { getLineAndCharacterOfPosition } from "../node_modules/typescript/lib/typescript.js";
 import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
 import { JXRGithubLinks } from "./component_github.js";
 import { JXRSearchUI } from "./component_search.js";
-import { getExtension, get_trees, highlightCode } from "./utils.js";
+import { escapeHtml, getExtension, get_trees, highlightCode } from "./utils.js";
 
 let search_ui: JXRSearchUI | undefined;
 let code_table: JXRCodeTable | undefined;
 
 async function setup_search() {
   async function redirect(tree: string, query: string) {
-    window.location.href = `/?tree=${encodeURIComponent(tree)}&search=${encodeURIComponent(query)}`;
+    window.location.href = `/?tree=${encodeURIComponent(
+      tree
+    )}&search=${encodeURIComponent(query)}`;
   }
 
   search_ui = new JXRSearchUI(
@@ -24,12 +27,47 @@ async function setup_search() {
   );
 }
 
+function getLines(node: Node, current_line: string, lines: string[]) {
+  if (!node) {
+    return;
+  }
+
+  if (node.textContent?.includes("\n")) {
+    console.log(`pushing ${current_line} in`, node);
+    lines.push(`${current_line}`);
+    current_line = "";
+  } else {
+    current_line += node.textContent;
+  }
+
+  for (let child of node.childNodes) {
+    getLines(child, current_line, lines);
+  }
+}
+
 function populate_code_table(code: string, extension: string) {
-  code.split("\n").forEach((line, index) => {
-    code_table!.append(
-      new JXRCodeTableLine(String(index + 1), line, extension)
-    );
-  });
+  // <pre><code class="language-${extension}"></code></pre>
+  code_table!.dom.innerHTML = `<pre><code class="language-${extension}">${escapeHtml(
+    code
+  )}</code></pre>`;
+
+  // console.log(document.querySelector("code")?.childNodes);
+  // setTimeout(() => console.log(document.querySelector("code")?.childNodes), 0);
+
+  const lines: string[] = [];
+  getLines(document.querySelector("code")! as Node, "", lines);
+  console.log("got lines");
+  console.log(lines);
+
+  // console.log("extracted lines are:", lines);
+
+  highlightCode();
+
+  // code.split("\n").forEach((line, index) => {
+  //   code_table!.append(
+  //     new JXRCodeTableLine(String(index + 1), line, extension)
+  //   );
+  // });
 }
 
 async function setup_github(tree: string, path: string) {
@@ -57,8 +95,6 @@ async function load_file() {
   const tree = search_ui!.getTreeSelector().getTree();
   const response = await fetch(`jxr-code/${tree}/${path}`);
   populate_code_table(await response.text(), extension);
-
-  highlightCode();
 
   const hash = window.location.hash;
   if (hash) {

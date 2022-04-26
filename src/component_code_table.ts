@@ -9,7 +9,7 @@ abstract class JXRCodeTableElementInterface {
 // and popup_id instead.
 export class JXRCodeTable {
   private table_elements: JXRCodeTableElementInterface[];
-  private dom: HTMLTableElement;
+  public dom: HTMLTableElement; // TODO: make private
   private popup_dom: HTMLElement | undefined;
   private last_clicked_symbol: string | undefined;
   private search_ui: JXRSearchUI;
