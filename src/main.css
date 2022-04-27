@@ -54,3 +54,13 @@ a:hover {
   border: 2px darkgrey solid;
   padding: 5px;
 }
+
+#flex-parent {
+  display: flex;
+}
+
+.line-numbers {
+  padding-right: 0.5em;
+  text-align: right;
+  font-family: monospace;
+}

@@ -27,47 +27,33 @@ async function setup_search() {
   );
 }
 
-function getLines(node: Node, current_line: string, lines: string[]) {
-  if (!node) {
-    return;
+function construct_line_numbers(code: string) {
+  var nr_lines = (code.match(/\n/g) || []).length;
+  let line_number_dom = "";
+  for (let i = 1; i < nr_lines + 2; i++) {
+    line_number_dom += `<div id="line-${i}">${i}</div>`;
   }
+  line_number_dom = `<div class="line-numbers">${line_number_dom}</div>`;
 
-  if (node.textContent?.includes("\n")) {
-    console.log(`pushing ${current_line} in`, node);
-    lines.push(`${current_line}`);
-    current_line = "";
-  } else {
-    current_line += node.textContent;
-  }
+  return line_number_dom;
+}
 
-  for (let child of node.childNodes) {
-    getLines(child, current_line, lines);
-  }
+function show_specified_line() {
+  document.querySelector(window.location.hash)!.scrollIntoView();
 }
 
 function populate_code_table(code: string, extension: string) {
-  // <pre><code class="language-${extension}"></code></pre>
-  code_table!.dom.innerHTML = `<pre><code class="language-${extension}">${escapeHtml(
-    code
-  )}</code></pre>`;
+  // TODO: hint language
+  const worker = new Worker("js/highlight_worker.js");
 
-  // console.log(document.querySelector("code")?.childNodes);
-  // setTimeout(() => console.log(document.querySelector("code")?.childNodes), 0);
+  worker.onmessage = (event) => {
+    const right = `<pre><code class="language-${extension}">${event.data.trim()}</pre></code>`;
+    const left = construct_line_numbers(right);
+    code_table!.dom.innerHTML = `<div id="flex-parent">${left}${right}</div>`;
+    show_specified_line();
+  };
 
-  const lines: string[] = [];
-  getLines(document.querySelector("code")! as Node, "", lines);
-  console.log("got lines");
-  console.log(lines);
-
-  // console.log("extracted lines are:", lines);
-
-  highlightCode();
-
-  // code.split("\n").forEach((line, index) => {
-  //   code_table!.append(
-  //     new JXRCodeTableLine(String(index + 1), line, extension)
-  //   );
-  // });
+  worker.postMessage(code);
 }
 
 async function setup_github(tree: string, path: string) {

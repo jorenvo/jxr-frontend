@@ -1,5 +1,6 @@
 interface hljsInterface {
   highlightAll: () => void;
+  highlightAuto: (data: any) => any;
 }
 
 declare global {
