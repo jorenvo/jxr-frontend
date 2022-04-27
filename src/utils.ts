@@ -1,6 +1,7 @@
 interface hljsInterface {
   highlightAll: () => void;
-  highlightAuto: (data: any) => any;
+  highlightAuto: (code: any, languageSubset: any[]) => any;
+  highlight: (code: string, options: {}) => any;
 }
 
 declare global {

@@ -53,7 +53,7 @@ function populate_code_table(code: string, extension: string) {
     show_specified_line();
   };
 
-  worker.postMessage(code);
+  worker.postMessage({ code: code, extension: extension });
 }
 
 async function setup_github(tree: string, path: string) {
