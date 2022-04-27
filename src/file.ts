@@ -39,7 +39,10 @@ function construct_line_numbers(code: string) {
 }
 
 function show_specified_line() {
-  document.querySelector(window.location.hash)!.scrollIntoView();
+  const hash = window.location.hash;
+  if (hash) {
+    document.querySelector(hash)!.scrollIntoView();
+  }
 }
 
 function populate_code_table(code: string, extension: string) {
@@ -80,12 +83,6 @@ async function load_file() {
   const tree = search_ui!.getTreeSelector().getTree();
   const response = await fetch(`jxr-code/${tree}/${path}`);
   populate_code_table(await response.text(), extension);
-
-  const hash = window.location.hash;
-  if (hash) {
-    document.getElementById(hash.replace("#", ""))!.scrollIntoView();
-  }
-
   setup_github(tree, path);
 }
 
