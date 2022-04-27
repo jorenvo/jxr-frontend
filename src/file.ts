@@ -1,14 +1,17 @@
+import { getLineAndCharacterOfPosition } from "../node_modules/typescript/lib/typescript.js";
 import { JXRCodeTable, JXRCodeTableLine } from "./component_code_table.js";
 import { JXRGithubLinks } from "./component_github.js";
 import { JXRSearchUI } from "./component_search.js";
-import { getExtension, get_trees, highlightCode } from "./utils.js";
+import { escapeHtml, getExtension, get_trees, highlightCode } from "./utils.js";
 
 let search_ui: JXRSearchUI | undefined;
 let code_table: JXRCodeTable | undefined;
 
 async function setup_search() {
   async function redirect(tree: string, query: string) {
-    window.location.href = `/?tree=${encodeURIComponent(tree)}&search=${encodeURIComponent(query)}`;
+    window.location.href = `/?tree=${encodeURIComponent(
+      tree
+    )}&search=${encodeURIComponent(query)}`;
   }
 
   search_ui = new JXRSearchUI(
@@ -24,12 +27,35 @@ async function setup_search() {
   );
 }
 
+function construct_line_numbers(code: string) {
+  var nr_lines = (code.match(/\n/g) || []).length;
+  let line_number_dom = "";
+  for (let i = 1; i < nr_lines + 2; i++) {
+    line_number_dom += `<div id="line-${i}">${i}</div>`;
+  }
+  line_number_dom = `<div class="line-numbers">${line_number_dom}</div>`;
+
+  return line_number_dom;
+}
+
+function show_specified_line() {
+  const hash = window.location.hash;
+  if (hash) {
+    document.querySelector(hash)!.scrollIntoView();
+  }
+}
+
 function populate_code_table(code: string, extension: string) {
-  code.split("\n").forEach((line, index) => {
-    code_table!.append(
-      new JXRCodeTableLine(String(index + 1), line, extension)
-    );
-  });
+  const worker = new Worker("js/highlight_worker.js");
+
+  worker.onmessage = (event) => {
+    const right = `<pre><code class="language-${extension}">${event.data.trim()}</pre></code>`;
+    const left = construct_line_numbers(right);
+    code_table!.dom.innerHTML = `<div id="flex-parent">${left}${right}</div>`;
+    show_specified_line();
+  };
+
+  worker.postMessage({ code: code, extension: extension });
 }
 
 async function setup_github(tree: string, path: string) {
@@ -57,14 +83,6 @@ async function load_file() {
   const tree = search_ui!.getTreeSelector().getTree();
   const response = await fetch(`jxr-code/${tree}/${path}`);
   populate_code_table(await response.text(), extension);
-
-  highlightCode();
-
-  const hash = window.location.hash;
-  if (hash) {
-    document.getElementById(hash.replace("#", ""))!.scrollIntoView();
-  }
-
   setup_github(tree, path);
 }
 
