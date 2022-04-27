@@ -43,7 +43,6 @@ function show_specified_line() {
 }
 
 function populate_code_table(code: string, extension: string) {
-  // TODO: hint language
   const worker = new Worker("js/highlight_worker.js");
 
   worker.onmessage = (event) => {
