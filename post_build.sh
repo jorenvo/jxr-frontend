@@ -13,6 +13,9 @@ echo "Replacing JXR_BACKEND with ${JXR_BACKEND}...  "
 # Can't double quote ${...} because: echo "\" => \\
 sed -i.bak s/JXR_BACKEND/${JXR_BACKEND//\//\\\/}/g dist/js/*.js
 
+echo "Replacing JXR_INDEXED_CODE_ROOT with ${JXR_INDEXED_CODE_ROOT}...  "
+sed -i.bak s/JXR_INDEXED_CODE_ROOT/${JXR_INDEXED_CODE_ROOT//\//\\\/}/g dist/js/*.js
+
 # if [ "${JXR_BACKEND}" = "http://localhost:8081" ]; then
 #     echo "Copying some test indexed code..."
 #     mkdir dist/jxr-code

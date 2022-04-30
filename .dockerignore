@@ -1,0 +1,5 @@
+jxr-indexed-code
+dist
+node_modules
+Dockerfile
+.dockerignore

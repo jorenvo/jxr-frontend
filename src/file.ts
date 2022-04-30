@@ -60,7 +60,7 @@ function populate_code_table(code: string, extension: string) {
 
 async function setup_github(tree: string, path: string) {
   const full_path = `${tree}/${path}`;
-  const root_response = fetch(`JXR_BACKEND/root?path=${full_path}`);
+  const root_response = fetch(`JXR_BACKEND/gitroot?path=${full_path}`);
   const head_response = fetch(`JXR_BACKEND/head?path=${full_path}`);
   const github_response = fetch(`JXR_BACKEND/github?path=${full_path}`);
 
@@ -81,7 +81,9 @@ async function load_file() {
   const path = url.searchParams.get("path")!;
   const extension = getExtension(path);
   const tree = search_ui!.getTreeSelector().getTree();
-  const response = await fetch(`jxr-code/${tree}/${path}`);
+  const response = await fetch(
+    `JXR_BACKEND/JXR_INDEXED_CODE_ROOT/${tree}/${path}`
+  );
   populate_code_table(await response.text(), extension);
   setup_github(tree, path);
 }
