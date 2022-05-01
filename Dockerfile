@@ -7,7 +7,9 @@ WORKDIR /jxr-frontend
 COPY . .
 
 RUN npm install
-RUN npm build
+
+# TODO: building is done by docker compose because it determines JXR_BACKEND
+# RUN npm run build
 
 CMD [ "npm", "run", "server" ]
 EXPOSE 80

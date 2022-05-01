@@ -7,6 +7,7 @@ cp "${PWD}"/src/*.html dist/
 cp "${PWD}"/src/*.css dist/
 cp libs/*.js dist/js/
 cp libs/*.css dist/
+cp favicon/* dist/
 
 # This echo statement also acts as a safeguard against running without defining JXR_BACKEND.
 echo "Replacing JXR_BACKEND with ${JXR_BACKEND}...  "
